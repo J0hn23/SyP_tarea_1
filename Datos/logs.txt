@@ -1,0 +1,20 @@
+2026-10-29 08:00:01 INFO Servidor iniciado correctamente
+2026-10-29 08:00:03 ERROR Fallo de conexión a la base de datos
+2026-10-29 08:00:05 INFO Usuario conectado: ana
+2026-10-29 08:00:08 WARNING Memoria RAM al 85%
+2026-10-29 08:00:10 DEBUG Inicio de comprobación de permisos
+2026-10-29 08:00:12 ERROR Acceso denegado para el usuario: invitado
+2026-10-29 08:00:15 INFO Copia de seguridad iniciada
+2026-10-29 08:00:18 WARNING Tiempo de respuesta elevado: 2.4 segundos
+2026-10-29 08:00:20 INFO Copia de seguridad completada
+2026-10-29 08:00:22 ERROR No se pudo leer el archivo de configuración
+2026-10-29 08:00:25 DEBUG Se ha cerrado la conexión con el cliente
+2026-10-29 08:00:28 WARNING Espacio en disco al 90%
+2026-10-29 08:00:30 INFO Servidor escuchando en el puerto 8080
+2026-10-29 08:00:33 ERROR Tiempo de espera agotado al contactar con el servidor remoto
+2026-10-29 08:00:36 INFO Sesión finalizada: ana
+2026-10-29 08:00:40 NOTICE Actualización de configuración aplicada
+2026-10-29 08:00:44 WARNING Tres intentos de inicio de sesión fallidos
+2026-10-29 08:00:48 INFO Proceso de mantenimiento finalizado
+2026-10-29 08:00:52 DEBUG Uso de CPU: 32%
+2026-10-29 08:00:55 ERROR No se pudo completar la operación solicitada
