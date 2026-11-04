@@ -42,7 +42,7 @@ public class AnalitzadorPrincipal {
             while ((linea = archivo.readLine()) != null) {
             escritor.println(linea);
             }
-            
+            escritor.flush();
             escritor.close();
             archivo.close();
             

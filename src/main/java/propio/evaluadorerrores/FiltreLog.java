@@ -17,23 +17,35 @@ public class FiltreLog {
     public static void main(String[] args) {
 
         try {
-            BufferedReader lector = new BufferedReader(new InputStreamReader(System.in));
+            BufferedReader lector = new BufferedReader(
+                new InputStreamReader(System.in)
+            );
+
             String linea;
-            int contadorError=0;
+            int contadorError = 0;
+            boolean hayTexto = false;
+
             while ((linea = lector.readLine()) != null) {
-                
+
+                if (!linea.isBlank()) {
+                    hayTexto = true;
+                }
+
                 if (linea.contains("ERROR")) {
-                    //System.err.println(linea);
-                    ++contadorError;
-                    
-                } 
+                    contadorError++;
+                }
             }
-            System.err.println(contadorError);
+
+            if (!hayTexto) {
+                System.exit(1);
+            }
+
+            System.out.println(contadorError);
             lector.close();
 
         } catch (IOException ex) {
-            System.out.println("Error en la lectura del fichero recibido en el proceso Filtro");
+            System.err.println("Error en la lectura del proceso hijo");
+            System.exit(1);
         }
-
     }
 }
