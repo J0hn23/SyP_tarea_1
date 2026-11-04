@@ -26,9 +26,7 @@ public class FiltreLog {
                     //System.err.println(linea);
                     ++contadorError;
                     
-                } else if (linea.contains("WARNING")) {
-                    System.out.println(linea);
-                }
+                } 
             }
             System.err.println(contadorError);
             lector.close();

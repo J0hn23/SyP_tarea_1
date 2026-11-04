@@ -33,42 +33,12 @@ public class AnalitzadorPrincipal {
                     new FileReader("C:\\Users\\John\\Documents\\NetBeansProjects\\EvaluadorErrores\\Datos\\logs.txt"));//Abro el archivo para leerlo
             //Lo mando al hijo FilterLog escribiendolo en él bufer del hijo
             PrintWriter escritor = new PrintWriter(proceso.getOutputStream());// con el getOutputStream se lo voy mandando a la entrada del hijo
-
-            Thread hiloErorres;
-            hiloErorres = new Thread(() -> {
-
-                try {
-                    BufferedReader lectorErrores = new BufferedReader(
-                new InputStreamReader(proceso.getErrorStream())
-        );
-                    String linea;
-                    while ((linea = lectorErrores.readLine()) != null) {
-                        System.err.println(linea);
-                    }
-                } catch (IOException ex) {
-                    System.out.println("error de lectura bufer de errores");
-                }
-            });
-            Thread hiloWarning;
-            hiloWarning = new Thread(() -> {
-                try {
-                    BufferedReader lectorWarnings = new BufferedReader(
-                new InputStreamReader(proceso.getInputStream())
-        );
-                    String linea;
-                    while ((linea = lectorWarnings.readLine()) != null) {
-                        System.out.println(linea);
-                    }
-                } catch (IOException ex) {
-                    System.out.println("error de lectura buffer normal");
-                }
-            });
             
-            hiloErorres.start();
-            hiloWarning.start();
-            
+            BufferedReader respuestaHijo = new BufferedReader(new InputStreamReader(proceso.getInputStream()));//Preparo un BR para leer el bufer de la respuesta del hijo
+
+         
             String linea;
-
+            //Leo linea por linea al hijo
             while ((linea = archivo.readLine()) != null) {
             escritor.println(linea);
             }
@@ -76,17 +46,22 @@ public class AnalitzadorPrincipal {
             escritor.close();
             archivo.close();
             
-            hiloErorres.join();
-            hiloWarning.join();
+            //Leo lo que ha mandado el hijo a traves de su salida
+            String resultado = respuestaHijo.readLine();
 
+            System.out.println("Número de errores: "+resultado);
+            
+            //Leo la respuesta del proceso
             int codigoResultado = proceso.waitFor();
         
-            System.out.println(codigoResultado);
+            System.out.println("Codigo del waitFor: "+codigoResultado);
+            
         } catch (IOException ex) {
             System.out.println("Error de inicio del proceso");
             System.out.println("Error:" + ex.getMessage());
         } catch (InterruptedException ex) {
-            Logger.getLogger(AnalitzadorPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Error de inicio del proceso interrumpido");
+            System.out.println("Error:" + ex.getMessage());
         }
     }
 }
