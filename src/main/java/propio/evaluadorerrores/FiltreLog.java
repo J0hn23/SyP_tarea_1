@@ -35,12 +35,13 @@ public class FiltreLog {
                     contadorError++;
                 }
             }
-
+            //Si no hay texto mensaje exit 1 
             if (!hayTexto) {
                 System.exit(1);
             }
-
+            //Envio a la salida en numero de errores contados
             System.out.println(contadorError);
+            //Cierro el buffer
             lector.close();
 
         } catch (IOException ex) {
