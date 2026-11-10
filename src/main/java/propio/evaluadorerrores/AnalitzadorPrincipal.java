@@ -1,7 +1,5 @@
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
-
-
  */
 package propio.evaluadorerrores;
 
@@ -28,44 +26,41 @@ public class AnalitzadorPrincipal {
                     System.getProperty("java.class.path"),
                     "propio.evaluadorerrores.FiltreLog");
             //pb.inheritIO();  esta linea permite que la salida del hijo salga por la terminal del padre
-           
 
             BufferedReader archivo = new BufferedReader(
                     new FileReader("C:\\Users\\John\\Documents\\NetBeansProjects\\EvaluadorErrores\\Datos\\logs.txt"));//Abro el archivo para leerlo
             //Lo mando al hijo FilterLog escribiendolo en él bufer del hijo
-           
-            
-            //BufferedReader respuestaHijo = new BufferedReader(new InputStreamReader(proceso.getInputStream()));//Preparo un BR para leer el bufer de la respuesta del hijo
 
-            File archivoSalida= new File("C:\\Users\\John\\Documents\\NetBeansProjects\\EvaluadorErrores\\Datos\\salidaHijo.txt");
-            pb.redirectOutput(archivoSalida);
+            //BufferedReader respuestaHijo = new BufferedReader(new InputStreamReader(proceso.getInputStream()));//Preparo un BR para leer el bufer de la respuesta del hijo
+            File archivoSalidaErrores = new File("C:\\Users\\John\\Documents\\NetBeansProjects\\EvaluadorErrores\\Datos\\errors_filtre.log");
+            //En el nivel II redirije la salida a un File
+            pb.redirectError(archivoSalidaErrores);
             Process proceso = pb.start();
             PrintWriter escritor = new PrintWriter(proceso.getOutputStream());// con el getOutputStream se lo voy mandando a la entrada del hijo
-            
+
             String linea;
             //Leo linea por linea al hijo
             while ((linea = archivo.readLine()) != null) {
-            escritor.println(linea);
+                escritor.println(linea);
             }
             escritor.flush();
             escritor.close();
             archivo.close();
-            
+
             //Leo lo que ha mandado el hijo a traves de su salida
             //String resultado = respuestaHijo.readLine();
             //System.out.println("Número de errores: "+resultado);
-            
-            //En el nivel II redirije la salida a un File
-            
-            
-            
-            
-            
             //Leo la respuesta del proceso
             int codigoResultado = proceso.waitFor();
-        
-            System.out.println("Codigo del waitFor: "+codigoResultado);
-            
+
+            System.out.println("Codigo de salida: " +codigoResultado);
+           
+            if (codigoResultado == 0) {
+                System.out.println("Proceso finalizado correctamente.");
+            } else {
+                System.out.println("Proceso finalizado con error. Código: " + codigoResultado);
+            }
+
         } catch (IOException ex) {
             System.out.println("Error de inicio del proceso:");
             System.out.println("Error:" + ex.getMessage());
