@@ -20,46 +20,88 @@ public class AnalitzadorPrincipal {
 
     public static void main(String[] args) {
 
+        String cadenaError = "ERROR";
+        String cadenaWarning = "WARNING";
+
         try {
-            ProcessBuilder pb = new ProcessBuilder("java",
+            ProcessBuilder procesoHijoA = new ProcessBuilder("java",
                     "-cp",
                     System.getProperty("java.class.path"),
-                    "propio.evaluadorerrores.FiltreLog");
-            //pb.inheritIO();  esta linea permite que la salida del hijo salga por la terminal del padre
+                    "propio.evaluadorerrores.FiltreLog",
+                    cadenaError);
 
+            ProcessBuilder procesoHijoB = new ProcessBuilder("java",
+                    "-cp",
+                    System.getProperty("java.class.path"),
+                    "propio.evaluadorerrores.FiltreLog",
+                    cadenaWarning);
+
+            //pb.inheritIO();  esta linea permite que la salida del hijo salga por la terminal del padre
             BufferedReader archivo = new BufferedReader(
                     new FileReader("C:\\Users\\John\\Documents\\NetBeansProjects\\EvaluadorErrores\\Datos\\logs.txt"));//Abro el archivo para leerlo
-            //Lo mando al hijo FilterLog escribiendolo en él bufer del hijo
 
+            //Creo el proceso y lo inicio
+            Process procesoError = procesoHijoA.start();
+            Process procesoWarning = procesoHijoB.start();
+
+            PrintWriter escritorError = new PrintWriter(procesoError.getOutputStream());// con el getOutputStream se lo voy mandando a la entrada del hijo
+            PrintWriter escritorWarning = new PrintWriter(procesoWarning.getOutputStream());// 
+
+            //Lo mando al hijo FilterLog escribiendolo en él bufer del hijo
             //BufferedReader respuestaHijo = new BufferedReader(new InputStreamReader(proceso.getInputStream()));//Preparo un BR para leer el bufer de la respuesta del hijo
-            File archivoSalidaErrores = new File("C:\\Users\\John\\Documents\\NetBeansProjects\\EvaluadorErrores\\Datos\\errors_filtre.log");
             //En el nivel II redirije la salida a un File
+            /*
+            File archivoSalidaErrores = new File("C:\\Users\\John\\Documents\\NetBeansProjects\\EvaluadorErrores\\Datos\\errors_filtre.log");
             pb.redirectError(archivoSalidaErrores);
             Process proceso = pb.start();
-            PrintWriter escritor = new PrintWriter(proceso.getOutputStream());// con el getOutputStream se lo voy mandando a la entrada del hijo
-
+             */
+            //Creo los hilos para diferenciar entre errores y warning y contarlos
             String linea;
             //Leo linea por linea al hijo
             while ((linea = archivo.readLine()) != null) {
-                escritor.println(linea);
+                escritorError.println(linea);
+                escritorWarning.println(linea);
             }
-            escritor.flush();
-            escritor.close();
+
+            //Primero cierro los flujos
+            escritorError.flush();
+            escritorWarning.flush();
+            
+            escritorError.close();
+            escritorWarning.close();
             archivo.close();
+            
+            
+            //Y ahora leo las respuestas d elos bufferd
+              BufferedReader salidaErrores = new BufferedReader(
+                    new InputStreamReader(procesoError.getInputStream())
+            );
+
+            BufferedReader salidaWarnings = new BufferedReader(
+                    new InputStreamReader(procesoWarning.getInputStream())
+            );
+
+            // Leemos el número enviado por cada hijo y lo parseo a int
+            int numeroErrores = Integer.parseInt(salidaErrores.readLine());
+            int numeroWarnings = Integer.parseInt(salidaWarnings.readLine());
+
 
             //Leo lo que ha mandado el hijo a traves de su salida
             //String resultado = respuestaHijo.readLine();
             //System.out.println("Número de errores: "+resultado);
             //Leo la respuesta del proceso
-            int codigoResultado = proceso.waitFor();
+            int codigoErrores = procesoError.waitFor();
+            int codigoWarnings = procesoWarning.waitFor();
 
-            System.out.println("Codigo de salida: " +codigoResultado);
-           
-            if (codigoResultado == 0) {
-                System.out.println("Proceso finalizado correctamente.");
+            int codigoFinal;
+
+            if (codigoErrores == 0 && codigoWarnings == 0) {
+                codigoFinal = 0;
             } else {
-                System.out.println("Proceso finalizado con error. Código: " + codigoResultado);
+                codigoFinal = 1;
             }
+
+            System.out.println( "RESULTADO: ERRORES=" + numeroErrores + " | WARNINGS=" + numeroWarnings + " | EXIT_CODE=" + codigoFinal);
 
         } catch (IOException ex) {
             System.out.println("Error de inicio del proceso:");

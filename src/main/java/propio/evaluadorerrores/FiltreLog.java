@@ -16,13 +16,26 @@ public class FiltreLog {
 
     public static void main(String[] args) {
 
+        String palabraBuscada;
+
+        if (args.length > 0) {
+            palabraBuscada = args[0];
+        } else {
+            palabraBuscada = "ERROR";
+        }
+
+        comparacion(palabraBuscada);
+    }
+
+    private static void comparacion(String palabraBuscada) {
+
         try {
             BufferedReader lector = new BufferedReader(
-                new InputStreamReader(System.in)
+                    new InputStreamReader(System.in)
             );
 
             String linea;
-            int contadorError = 0;
+            int contador = 0;
             boolean hayTexto = false;
 
             while ((linea = lector.readLine()) != null) {
@@ -31,17 +44,20 @@ public class FiltreLog {
                     hayTexto = true;
                 }
 
-                if (linea.contains("ERROR")) {
-                    contadorError++;
+                // Busca únicamente la palabra recibida
+                if (linea.contains(palabraBuscada)) {
+                    contador++;
                 }
             }
-            //Si no hay texto mensaje exit 1 
+
             if (!hayTexto) {
                 System.exit(1);
+                System.err.println("No se ha recibido texto en el fichero/esta vacio");
             }
-            //Envio a la salida en numero de errores contados
-            System.out.println(contadorError);
-            //Cierro el buffer
+
+            // Devuelve un único resultado por la salida normal
+            System.out.println(contador);
+
             lector.close();
 
         } catch (IOException ex) {
