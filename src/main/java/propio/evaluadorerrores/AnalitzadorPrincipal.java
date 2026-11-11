@@ -24,6 +24,7 @@ public class AnalitzadorPrincipal {
         String cadenaWarning = "WARNING";
 
         try {
+            //Configuran los procesos que se crearan
             ProcessBuilder procesoHijoA = new ProcessBuilder("java",
                     "-cp",
                     System.getProperty("java.class.path"),
@@ -37,6 +38,7 @@ public class AnalitzadorPrincipal {
                     cadenaWarning);
 
             //pb.inheritIO();  esta linea permite que la salida del hijo salga por la terminal del padre
+            //Prepara la lectura del fichero dado
             BufferedReader archivo = new BufferedReader(
                     new FileReader("C:\\Users\\John\\Documents\\NetBeansProjects\\EvaluadorErrores\\Datos\\logs.txt"));//Abro el archivo para leerlo
 
@@ -55,7 +57,6 @@ public class AnalitzadorPrincipal {
             pb.redirectError(archivoSalidaErrores);
             Process proceso = pb.start();
              */
-            //Creo los hilos para diferenciar entre errores y warning y contarlos
             String linea;
             //Leo linea por linea al hijo
             while ((linea = archivo.readLine()) != null) {
@@ -63,17 +64,16 @@ public class AnalitzadorPrincipal {
                 escritorWarning.println(linea);
             }
 
-            //Primero cierro los flujos
+            //Me aseguro que mande todo lo que quede en el bufer, evito que se bloquee
             escritorError.flush();
             escritorWarning.flush();
-            
+            //Cierro los flujos
             escritorError.close();
             escritorWarning.close();
             archivo.close();
-            
-            
+
             //Y ahora leo las respuestas d elos bufferd
-              BufferedReader salidaErrores = new BufferedReader(
+            BufferedReader salidaErrores = new BufferedReader(
                     new InputStreamReader(procesoError.getInputStream())
             );
 
@@ -85,14 +85,14 @@ public class AnalitzadorPrincipal {
             int numeroErrores = Integer.parseInt(salidaErrores.readLine());
             int numeroWarnings = Integer.parseInt(salidaWarnings.readLine());
 
-
             //Leo lo que ha mandado el hijo a traves de su salida
             //String resultado = respuestaHijo.readLine();
             //System.out.println("Número de errores: "+resultado);
             //Leo la respuesta del proceso
-            int codigoErrores = procesoError.waitFor();
+            int codigoErrores = procesoError.waitFor();//O exitValue()
             int codigoWarnings = procesoWarning.waitFor();
-
+            //waitFor espera finalizacion y obtiene el codigo
+            //exitValue , si no finaliza lanza una excepcion tipo ilegalthreadState
             int codigoFinal;
 
             if (codigoErrores == 0 && codigoWarnings == 0) {
@@ -101,7 +101,7 @@ public class AnalitzadorPrincipal {
                 codigoFinal = 1;
             }
 
-            System.out.println( "RESULTADO: ERRORES=" + numeroErrores + " | WARNINGS=" + numeroWarnings + " | EXIT_CODE=" + codigoFinal);
+            System.out.println("RESULTAT: ERRORS=" + numeroErrores + " | WARNINGS=" + numeroWarnings + " | EXIT_CODE=" + codigoFinal);
 
         } catch (IOException ex) {
             System.out.println("Error de inicio del proceso:");

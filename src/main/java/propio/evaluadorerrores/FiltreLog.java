@@ -51,8 +51,10 @@ public class FiltreLog {
             }
 
             if (!hayTexto) {
-                System.exit(1);
                 System.err.println("No se ha recibido texto en el fichero/esta vacio");
+                lector.close();
+                System.exit(1);
+
             }
 
             // Devuelve un único resultado por la salida normal
